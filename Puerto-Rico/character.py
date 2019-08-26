@@ -27,6 +27,9 @@ class Character(Object):
     def addBounty(self):
         self.bounty += 1
 
+    def reset(self):
+        self.enable = True
+
     def selected(self):
         self.enable = False
         self.bounty = 0
@@ -44,7 +47,7 @@ class Pioneer(Character):
         cards = gameboard.plantationCards[0:5]
 
         for i in range(N_PLAYERS):
-            chooser = gameboard.players[i + gameboard.turn % N_PLAYERS]
+            chooser = gameboard.players[(i + gameboard.turn) % N_PLAYERS]
 
             # pioneer or builder hut
             if i == 0 or chooser.existUrban(BUILDER_HUT):
@@ -81,6 +84,27 @@ class Architect(Character):
         Character.__init__(self, "建筑师", "进行一个建筑师阶段", number,
                            "各个游戏者轮流修建一个建筑物",
                            "少花费一个杜布隆")
+
+    def act(self, gameboard):
+        for i in range(N_PLAYERS):
+            chooser = gameboard.players[(i + gameboard.turn) % N_PLAYERS]
+
+            # architect or quarry
+            discount = int(i == 0) + chooser.countQuarry()
+
+            buildings = []
+            for type in range(len(URBAN_BUILDING)):
+                if not chooser.existUrban(type):
+                    buildings.append(
+                        (type, URBAN_BUILDING[type][P_NAME],
+                         max(URBAN_BUILDING[type][P_PRICE] - discount, 0))
+                    )
+
+            showUrbanOption(buildings)
+            number = chooser.select("建筑物", [row[0] for row in buildings])
+
+            # build
+            chooser.buildUrban(number)
     pass
 
 
@@ -113,4 +137,8 @@ class GoldDigger(Character):
         Character.__init__(self, "淘金者", "没有行动只有特权", number,
                            "无",
                            "从银行获得一个杜布隆")
+
+    def act(self, gameboard):
+        gameboard.currentPlayer.addMoney(1)
+
     pass

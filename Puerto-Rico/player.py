@@ -45,6 +45,13 @@ class Player(Object):
     def buildUrban(self, type):
         self.urban.build(type)
 
+    def countQuarry(self):
+        count = 0
+        for eachBuilding in self.suburb.buildingList:
+            if eachBuilding.type == QUARRY:
+                count += 1
+        return count
+
     def existUrban(self, type):
         for eachBuilding in self.urban.buildingList:
             if eachBuilding.type == type:

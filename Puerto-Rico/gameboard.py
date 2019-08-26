@@ -32,13 +32,11 @@ class GameBoard(Object):
         self.players[2].buildSuburb(CORN)
         self.players[3].buildSuburb(CORN)
         self.turn = 0
-
         self.currentPlayer = self.players[self.turn]
-        self.selectCharacterPhase()
-        self.currentPlayer.character.act(self)
 
-        self.showInfo()
-
+        # start
+        while True:
+            self.onRound()
         pass
 
     def showInfo(self):
@@ -49,20 +47,44 @@ class GameBoard(Object):
         for eachPlayer in self.players:
             eachPlayer.showInfo()
 
-    def showCharactersOption(self, charactersNumber):
-        for eachCharacterNumber in charactersNumber:
-            print(eachCharacterNumber, ":",
-                  self.characters[eachCharacterNumber].name)
-        pass
+    def oneTurn(self):
+        # set currentPlayer
+        self.currentPlayer = self.players[self.turn]
 
-    def selectCharacterPhase(self):
-        charactersNumber = []
+        # select character
+        characters = []
         for eachCharacter in self.characters:
             if eachCharacter.enable:
-                charactersNumber.append(eachCharacter.number)
-        self.showCharactersOption(charactersNumber)
-        number = self.currentPlayer.select("角色", charactersNumber)
+                characters.append(
+                    (eachCharacter.number,
+                     eachCharacter.name,
+                     eachCharacter.bounty)
+                )
+
+        showCharacterOption(characters)
+        number = self.currentPlayer.select("角色", [row[0] for row in characters])
         self.currentPlayer.selectCharacter(self.characters[number])
         self.currentPlayer.character.selected()
 
+        # act
+        self.currentPlayer.character.act(self)
+
+        # next turn
+        self.turn = (self.turn + 1) % N_PLAYERS
+
+        # show information
+        self.showInfo()
+
+    def onRound(self):
+        # each player get a turn
+        for i in range(N_PLAYERS):
+            self.oneTurn()
+
+        # add bounty
+        for eachCharacter in self.characters:
+            if eachCharacter.enable:
+                eachCharacter.addBounty()
+            else:
+                eachCharacter.reset()
+        pass
     pass
