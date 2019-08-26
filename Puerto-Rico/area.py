@@ -5,7 +5,7 @@ from enumeration import *
 
 class Area(Object):
     def __init__(self, name, description, number, capacity):
-        Object.__init__(self, name, "区域", description)
+        Object.__init__(self, name, description)
         self.number = number
         self.buildingList = []
         self.size = 0

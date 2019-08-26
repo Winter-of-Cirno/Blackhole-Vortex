@@ -1,4 +1,5 @@
 # general
+N_PLAYERS = 4
 N_PLANTATION = 5
 N_PRODUCTION_BUILDINGS = 6
 
@@ -46,5 +47,12 @@ FORTRESS = 20
 CUSTOMS = 21
 TOWN_HALL = 22
 
-
-
+# names
+SUBURB_NAMES = [
+    "玉米种植园",
+    "靛蓝种植园",
+    "甘蔗种植园",
+    "烟草种植园",
+    "咖啡种植园",
+    "采石场"
+]

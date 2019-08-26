@@ -1,9 +1,11 @@
 from object import Object
+from enumeration import *
+from option import *
 
 
 class Character(Object):
     def __init__(self, name, description, number, action, privilege):
-        Object.__init__(self, name, "角色卡", description)
+        Object.__init__(self, name, description)
         self.number = number
         self.bounty = 0
         self.enable = True
@@ -15,9 +17,12 @@ class Character(Object):
         print("序号: " + str(self.number),
               "赏金: " + str(self.bounty),
               "可选择: " + str(self.enable))
+        print()
+
+    def introduction(self):
+        Object.showInfo(self)
         print("行动: " + self.action)
         print("特权: " + self.privilege)
-        print()
 
     def addBounty(self):
         self.bounty += 1
@@ -33,6 +38,33 @@ class Pioneer(Character):
         Character.__init__(self, "拓荒者", "进行一个拓荒者阶段", number,
                            "各个游戏者轮流获得一个种植园",
                            "可以不获得种植园而获得采石场")
+
+    def act(self, gameboard):
+        # flip out 5 cards
+        cards = gameboard.plantationCards[0:5]
+
+        for i in range(N_PLAYERS):
+            chooser = gameboard.players[i + gameboard.turn % N_PLAYERS]
+
+            # pioneer or builder hut
+            if i == 0 or chooser.existUrban(BUILDER_HUT):
+                showSuburbOption(cards + [QUARRY])
+                number = chooser.select("种植园或采石场", cards + [QUARRY])
+            else:
+                showSuburbOption(cards)
+                number = chooser.select("种植园", cards)
+
+            # remove card
+            if number != QUARRY:
+                cards.remove(number)
+                gameboard.plantationCards.remove(number)
+
+            # build
+            chooser.buildSuburb(number)
+
+        # remove card
+        for eachCard in cards:
+            gameboard.plantationCards.remove(eachCard)
     pass
 
 

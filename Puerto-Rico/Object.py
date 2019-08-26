@@ -1,7 +1,6 @@
 class Object:
-    def __init__(self, name, type, description):
+    def __init__(self, name, description):
         self.name = name
-        self.type = type
         self.description = description
 
     def showInfo(self):

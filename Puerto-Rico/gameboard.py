@@ -1,10 +1,18 @@
 from object import Object
 from character import *
 from player import *
+import random
+
 
 class GameBoard(Object):
     def __init__(self):
-        Object.__init__(self, "桌面", "游戏板", "游戏进行的主要区域")
+        Object.__init__(self, "桌面", "游戏进行的主要区域")
+
+        # set plantation cards
+        self.plantationCards = \
+            [CORN]*10 + [INDIGO]*12 + [CANE]*11 + \
+            [TOBACCO]*9 + [COFFEE]*8
+        random.shuffle(self.plantationCards)
 
         # set character cards
         self.characters = [
@@ -27,22 +35,33 @@ class GameBoard(Object):
 
         self.currentPlayer = self.players[self.turn]
         self.selectCharacterPhase()
+        self.currentPlayer.character.act(self)
 
         self.showInfo()
 
         pass
 
     def showInfo(self):
-        print("角色卡情况\n")
+        print("角色卡情况: \n")
         for eachCharacter in self.characters:
             eachCharacter.showInfo()
         print("玩家情况: \n")
         for eachPlayer in self.players:
             eachPlayer.showInfo()
 
+    def showCharactersOption(self, charactersNumber):
+        for eachCharacterNumber in charactersNumber:
+            print(eachCharacterNumber, ":",
+                  self.characters[eachCharacterNumber].name)
+        pass
+
     def selectCharacterPhase(self):
-        print("请", self.currentPlayer.name, "选择角色:")
-        number = int(input())
+        charactersNumber = []
+        for eachCharacter in self.characters:
+            if eachCharacter.enable:
+                charactersNumber.append(eachCharacter.number)
+        self.showCharactersOption(charactersNumber)
+        number = self.currentPlayer.select("角色", charactersNumber)
         self.currentPlayer.selectCharacter(self.characters[number])
         self.currentPlayer.character.selected()
 

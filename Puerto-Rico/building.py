@@ -3,9 +3,10 @@ from enumeration import *
 
 
 class Building(Object):
-    def __init__(self, name, description,
+    def __init__(self, name, description, type,
                  n_maxWorkers, n_wins, n_price, n_area):
-        Object.__init__(self, name, "建筑物", description)
+        Object.__init__(self, name, description)
+        self.type = type
         self.n_maxWorkers = n_maxWorkers
         self.n_workers = 0
         self.n_wins = n_wins
@@ -47,7 +48,7 @@ class SuburbBuilding(Building):
             ("咖啡种植园", "产出咖啡", 1, 0, 0, 1),
             ("采石场", "减少建筑物的价格", 1, 0, 0, 1)
             ][type]
-        Building.__init__(self, name, description, n_maxWorkers, n_wins, n_price, n_area)
+        Building.__init__(self, name, description, type, n_maxWorkers, n_wins, n_price, n_area)
 
         if type <= N_PLANTATION:
             self.plantation = True
@@ -84,7 +85,7 @@ class UrbanBuilding(Building):
             ("市政厅", "游戏结束时根据功能建筑的数量额外获得胜利分数", 1, 10, 4, 2)
         ][type]
 
-        Building.__init__(self, name, description, n_maxWorkers, n_wins, n_price, n_area)
+        Building.__init__(self, name, description, type, n_maxWorkers, n_wins, n_price, n_area)
 
         if type <= N_PRODUCTION_BUILDINGS:
             self.productionBuilding = True

@@ -4,7 +4,7 @@ from area import *
 
 class Player(Object):
     def __init__(self, name, number, money, governor):
-        Object.__init__(self, name, "玩家", "游戏的操纵者")
+        Object.__init__(self, name, "玩家")
         self.number = number
         self.money = money
         self.goods = [0, 0, 0, 0, 0]
@@ -28,11 +28,28 @@ class Player(Object):
         self.urban.showInfo()
         print()
 
+    def select(self, string, scope):
+        print("请", self.name, "选择", string)
+        while True:
+            number = int(input())
+            if scope.count(number):
+                break
+            else:
+                print("请重新选择")
+        print()
+        return number
+
     def buildSuburb(self, type):
         self.suburb.build(type)
 
     def buildUrban(self, type):
         self.urban.build(type)
+
+    def existUrban(self, type):
+        for eachBuilding in self.urban.buildingList:
+            if eachBuilding.type == type:
+                return True
+        return False
 
     def addMoney(self, number):
         self.money += number
