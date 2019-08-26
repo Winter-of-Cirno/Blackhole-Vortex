@@ -6,5 +6,4 @@ class Object:
 
     def showInfo(self):
         print(self.name + ":", self.description)
-
     pass
